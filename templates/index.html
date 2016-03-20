@@ -1,0 +1,195 @@
+<html>
+<head>
+  <script src="https://cdn.firebase.com/js/client/2.2.1/firebase.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='canvas.css') }}">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <title>PixelPaint</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon/holdon.ico') }}" type="image/gif" sizes="16x16">
+  <link href='https://fonts.googleapis.com/css?family=VT323' rel='stylesheet' type='text/css'>
+  <!--<link href="{{ url_for('static', filename='navbar-fixed-top.css') }}" rel="stylesheet">-->
+
+
+
+  <style>
+  ::selection {
+      color: black;
+      /*background: #FF1493;*/
+  }
+    h2.title{
+      text-align: center;
+      font-family: 'VT323', Arial, serif; 
+      color:white;
+      /*font-size: 600%;
+      font-weight: 400; */
+    }
+    h2.title:hover{
+      color: #FF1493;
+    }
+    canvas#drawing-canvas{
+      background-color:white;
+    }
+
+    h2.underscore{
+      color: #FF1493;
+    }
+
+    *{
+    padding : 0;
+    margin : 0;
+    border : 0;
+    }
+    body{
+    background-color:#2c3e50;
+    background-attachment : fixed;
+    background-size : 100% auto;
+    }
+    
+  div.centre1
+  {
+    width: 150px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+ 
+  div.centre
+  {
+    width: 190px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  a:hover {
+      text-decoration: none;
+      color: white;
+  }
+
+  a:active {
+      text-decoration: none;
+      color: black;
+  }
+
+  a{
+    text-align: center;
+      margin: auto;
+      width: 60%;  
+      padding: 10px;
+      color: #FF1493;
+  }
+    
+    .blink_text {
+    -webkit-animation-name: blinker;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+
+    -moz-animation-name: blinker;
+    -moz-animation-duration: 1s;
+    -moz-animation-timing-function: linear;
+    -moz-animation-iteration-count: infinite;
+
+     animation-name: blinker;
+     animation-duration: 1s;
+     animation-timing-function: linear;
+     animation-iteration-count: infinite;
+
+     color: #e74c3c;
+    }
+
+    @-moz-keyframes blinker {  
+     0% { opacity: 1.0; }
+     50% { opacity: 0.0; }
+     100% { opacity: 1.0; }
+     }
+
+    @-webkit-keyframes blinker {  
+     0% { opacity: 1.0; }
+     50% { opacity: 0.0; }
+     100% { opacity: 1.0; }
+     }
+
+    @keyframes blinker {  
+     0% { opacity: 1.0; }
+     50% { opacity: 0.0; }
+     100% { opacity: 1.0; }
+     }
+     #heading h1, h2 { 
+      display: inline; }
+
+  </style>
+</head>
+<body>
+
+<div id="heading" class="centre1">
+  <h2 class="title">PixelPaint</h2><h2 class="title blink_text underscore">_</h2>
+</div>
+<br>
+<!--<h1 class="title">PixelPaint</h1>-->
+
+  
+
+
+<!--<div class="container">-->
+  <!--<div class="jumbotron">-->
+
+<div class="l-demo-container">
+  <span style="cursor:crosshair">
+    <canvas id="drawing-canvas" width="450" height="450"></canvas>
+    <!--<canvas id="drawing-canvas" width="480" height="420"></canvas>-->
+  </span>
+</div>
+  <span style="cursor:pointer">
+    <div id="colorholder"></div>
+  </span>
+
+  <div class="centre">
+    <br>
+    <br>
+<button onclick="clearCanvas()" type="button" class="btn btn-danger">Clear</button>
+<button onclick="saveImage()" type="button" class="btn btn-success">Save Image</button>
+  </div>
+            <!--</div> -->
+
+<div class="centre1">
+  <br>
+  <a href="https://github.com/montysingh" id="center" >@montysingh</a>
+</div>
+<!--</div>-->
+<script src="{{ url_for('static', filename='canvas.js') }}"></script>
+<script>
+var onComplete = function(error) {
+  if (error) {
+    console.log('Synchronization failed');
+  } else {
+    console.log('Synchronization succeeded');
+  }
+};
+
+function clearCanvas() {
+  //alert("clear the canvas");
+  var pixelDataRef = new Firebase('https://pixelpaint.firebaseio.com/');
+    pixelDataRef.remove(onComplete);
+    
+}
+
+
+ function saveImage()
+            {
+                var canvas = document.getElementById("drawing-canvas");
+                var image = canvas.toDataURL();
+
+                var aLink = document.createElement('a');
+                var evt = document.createEvent("HTMLEvents");
+                evt.initEvent("click");
+                aLink.download = 'MyPixelPainting.jpg';
+                aLink.href = image;
+                aLink.dispatchEvent(evt);
+            }
+</script>
+
+</body>
+</html>
