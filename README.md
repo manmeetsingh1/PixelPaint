@@ -7,5 +7,5 @@ Tools used in creating this project include:
     - [Heroku](https://www.heroku.com/)
     - [Firebase](https://www.firebase.com/)
 _**PixelPaint**_ is up and running as a Heroku app [here](http://pixelpaint.herokuapp.com/). Below is a screenshot of the site in action:
-![Alt text](site/static/index.png?raw=true "PixelPaint")
+![Alt text](static/index.png?raw=true "PixelPaint")
 
